@@ -51,7 +51,36 @@ class DataFetch:
 
 
 def show_help():
-    print('Print help here')
+    help_text = """
+    [ Random nHentai Finder ]
+    Developed by TacoAnime69
+
+    - Basic Usage -
+    No arguments: this will result in a completely random doujin with no restrictions.
+    Example: python3 RandomHentai.py
+
+    - Search All Tag Types -
+    All tags behave the same way as searching on nhentai website. You can list tags, characters, parodies, and languages. All arguments are searched with 'and' arguments. 
+    Example: python3 RandomHentai.py yuri big-breast english
+    Result: A random doujin that has the tags yuri and big breast in English language.
+    Note: any tags/searches that has a space in it needs to be replaced with a '-'
+
+    - Negate Search -
+    To specify tags of any type to exclude in the search, add '-' in front.
+    Example: python3 RandomHentai.py blowjob -rape -chinese
+    Result: A random doujin with the tag blowjob but not rape and that is NOT in the Chinese language.
+
+    - Advanced Tag Type Search -
+    There may be some cases where you need to specify a parameter, in which case you can type '[parameter namee]:[argument]'
+    Example: python3 RandomHentai.py yuri 'pages:>20' 'tag:"big breast"' 'parodies:"bang dream"'
+    Result: A random doujin with the tag yuri that's greater than 20 pages with the tag big breast that porodies big dream.
+
+    - Optional Flags -
+    --help - shows this text.
+    --browser - will open your default browser to the doujin.
+    --all - will display detailed info on the random doujin.
+    """
+    print(help_text)
 
 
 # Find random based on search queues
