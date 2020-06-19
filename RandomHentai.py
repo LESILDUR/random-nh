@@ -76,13 +76,17 @@ if len(search_items) > 0:
 
     # Generate search queue
     search_queue = 'https://nhentai.net/search/?q='
+    print(search_items)
     for index, tag in enumerate(search_items):
-        search_queue += tag
+        temp = tag
+        if ':' in temp:
+            temp = tag.replace(':', '%3A')
+        search_queue += temp
         if index != len(search_items) - 1:
             search_queue += '+'
 
     # Debug print
-    # print(f'Search URL: {search_queue}\nFlags [Browser: {browser_flag}], [All: {all_flag}]')
+    print(f'Search URL: {search_queue}\nFlags [Browser: {browser_flag}], [All: {all_flag}]')
 
     # Verify at least one result
     page = requests.get(search_queue)
