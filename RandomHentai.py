@@ -12,11 +12,21 @@ class DataFetch:
         tree = html.fromstring(page.content)
         title = str(tree.xpath(
             '//div[@id="info"]/h1/span[@class="pretty"]/text()')[0])
-        title += str(tree.xpath(
-            '//div[@id="info"]/h1/span[@class="after"]/text()')[0])
+        # J Title
+        j_title = ''
+        try:
+            j_title = str(tree.xpath(
+                '//div[@id="info"]/h2/span[@class="pretty"]/text()')[0])
+        except:
+            pass
+        tags = str(tree.xpath('//span[@class="name"]/text()')[:-1])
+        uploaded = str(tree.xpath('//time[@class="nobold"]/text()')[0])
         self._title = title
+        self._o_title = j_title
+        self._tags = tags
         self._pages = int(
             len(tree.xpath('//div[@class="thumb-container"]')))
+        self._uploaded = uploaded
         return
 
     @property
@@ -24,30 +34,45 @@ class DataFetch:
         return self._title
 
     @property
+    def o_title(self):
+        return self._o_title
+
+    @property
+    def tags(self):
+        return self._tags
+
+    @property
     def pages(self):
         return self._pages
+
+    @property
+    def uploaded(self):
+        return self._uploaded
 
 
 def show_help():
     print('Print help here')
 
 
-if len(sys.argv) > 1:
-    # Find random based on search queues
-    search_items = (sys.argv)[1:]
+# Find random based on search queues
+search_items = (sys.argv)[1:]
 
-    # Check for flags
-    browser_flag = False
-    all_flag = False
-    if '--help' in search_items:
-        show_help()
-        sys.exit()
-    if '--browser' in search_items:
-        browser_flag = True
-        search_items.remove('--browser')
-    if '--all' in search_items:
-        all_flag = True
-        search_items.remove('--all')
+# Check for flags
+browser_flag = False
+all_flag = False
+if '--help' in search_items:
+    show_help()
+    sys.exit()
+if '--browser' in search_items:
+    browser_flag = True
+    search_items.remove('--browser')
+if '--all' in search_items:
+    all_flag = True
+    search_items.remove('--all')
+
+random_doujin = 0
+
+if len(search_items) > 0:
 
     # Generate search queue
     search_queue = 'https://nhentai.net/search/?q='
@@ -90,17 +115,20 @@ if len(sys.argv) > 1:
     # Get random doujin
     random_thumb = random.randrange(thumb_count)
     random_doujin = thumbs[random_thumb][3:-1]
-
-    if browser_flag:
-        print(f'Opening Doujin in browser...')
-        webbrowser.open(f'https://nhentai.net/g/{random_doujin}/')
-    if all_flag:
-        doujin_info = DataFetch(random_doujin)
-        print(f'Title: {doujin_info.title}')
-        print(f'Pages: {doujin_info.pages}')
-    print(f'Doujin ID: {random_doujin}')
-
-
 else:
     # Find completely random
-    pass
+    page = requests.get('https://nhentai.net/random/')
+    tree = html.fromstring(page.content)
+    random_doujin = str(tree.xpath('//h3[@id="gallery_id"]/text()')[0])
+
+if browser_flag:
+    print(f'Opening Doujin in browser...')
+    webbrowser.open(f'https://nhentai.net/g/{random_doujin}/')
+if all_flag:
+    doujin_info = DataFetch(random_doujin)
+    print(f'Title:    {doujin_info.title}')
+    print(f'          {doujin_info.o_title}')
+    print(f'Tags:     {doujin_info.tags}')
+    print(f'Pages:    {doujin_info.pages}')
+    print(f'Uploaded: {doujin_info.uploaded}')
+print(f'Doujin ID: {random_doujin}')
